@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, QGridLayout, QComboBox, QLabel)
 from QLed import QLed
 import serial
 import serial.tools.list_ports
@@ -68,7 +68,9 @@ def name4():
     text, ok = QInputDialog.getText(window, 'name', 'input the name')
     if ok:
         btn42.setText(text)
-        
+def quit1():
+    sys.exit()
+    
 port_list = list(serial.tools.list_ports.comports())
 tempstr = ["none","none","none","none","none","none","none","none","none","none"]
 if len(port_list) == 0:
@@ -162,6 +164,10 @@ layout.addWidget(btn41)
 btn42 = QPushButton('device4 name')
 btn42.clicked.connect(name4) 
 layout.addWidget(btn42)
+
+btn7 = QPushButton('exit')
+btn7.clicked.connect(quit1) 
+layout.addWidget(btn7)
 
 window.setLayout(layout)
 window.show()
