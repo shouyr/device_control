@@ -1,3 +1,6 @@
+# laser_control
+Python code for the control of diode laser from BWT Beijing Ltd.
+
 # relay_control
 Python code for the control of remote relay
 
