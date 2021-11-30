@@ -16,7 +16,7 @@ def close_serial():
     ser.close()
     led.value = ser.isOpen()
 def selectionchange():
-    ser.close()
+    led.value = False
 
 def refreshdata():
     if led.value == True:
