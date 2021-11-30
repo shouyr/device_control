@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, QGridLayout, QComboBox, QLabel)
+from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, QGridLayout, QComboBox, QLabel, QInputDialog)
 from QLed import QLed
 import serial
 import serial.tools.list_ports
