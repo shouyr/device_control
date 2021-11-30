@@ -4,7 +4,7 @@ import serial
 import serial.tools.list_ports
 import sys
 def selectionchange():
-    ser.close()
+    led.value = False
 def oepn_serial():
     global ser
     comstr = cb.currentText()
