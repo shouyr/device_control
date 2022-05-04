@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, QGridLayout, QComboBox, QLabel, QInputDialog)
+from PyQt5.QtWidgets import (QApplication, QPushButton, QWidget, QGridLayout, QComboBox,  QInputDialog, QMessageBox)
 from QLed import QLed
 import serial
 import serial.tools.list_ports
@@ -38,6 +38,11 @@ def name1():
     text, ok = QInputDialog.getText(window, 'name', 'input the name')
     if ok:
         btn12.setText(text)
+        name_list[0] = text
+        f = open('name_list.txt','w')
+        for i in range(4):
+            f.writelines(name_list[i]+'\n')
+        f.close() 
 def open2():
     ser.write(b'\x01\x05\x00\x01\xFF\x00\xDD\xFA')
     led2.value = True
@@ -47,7 +52,12 @@ def close2():
 def name2():
     text, ok = QInputDialog.getText(window, 'name', 'input the name')
     if ok:
-        btn22.setText(text)        
+        btn22.setText(text) 
+        name_list[1] = text
+        f = open('name_list.txt','w')
+        for i in range(4):
+            f.writelines(name_list[i]+'\n')
+        f.close() 
 def open3():
     ser.write(b'\x01\x05\x00\x02\xFF\x00\x2D\xFA')
     led3.value = True
@@ -58,6 +68,11 @@ def name3():
     text, ok = QInputDialog.getText(window, 'name', 'input the name')
     if ok:
         btn32.setText(text)
+        name_list[2] = text
+        f = open('name_list.txt','w')
+        for i in range(4):
+            f.writelines(name_list[i]+'\n')
+        f.close() 
 def open4():
     ser.write(b'\x01\x05\x00\x03\xFF\x00\x7C\x3A')
     led4.value = True
@@ -68,9 +83,17 @@ def name4():
     text, ok = QInputDialog.getText(window, 'name', 'input the name')
     if ok:
         btn42.setText(text)
+        name_list[3] = text
+        f = open('name_list.txt','w')
+        for i in range(4):
+            f.writelines(name_list[i]+'\n')
+        f.close() 
 def quit1():
     sys.exit()
-    
+
+f = open('name_list.txt','r')
+name_list = f.read().splitlines()
+f.close()   
 port_list = list(serial.tools.list_ports.comports())
 tempstr = ["none","none","none","none","none","none","none","none","none","none"]
 if len(port_list) == 0:
@@ -113,7 +136,7 @@ btn11 = QPushButton('close1')
 btn11.clicked.connect(close1) 
 layout.addWidget(btn11)
 
-btn12 = QPushButton('device1 name')
+btn12 = QPushButton(name_list[0])
 btn12.clicked.connect(name1) 
 layout.addWidget(btn12)
 
@@ -129,7 +152,7 @@ btn21 = QPushButton('close2')
 btn21.clicked.connect(close2) 
 layout.addWidget(btn21)
 
-btn22 = QPushButton('device2 name')
+btn22 = QPushButton(name_list[1])
 btn22.clicked.connect(name2) 
 layout.addWidget(btn22)
 
@@ -145,7 +168,7 @@ btn31 = QPushButton('close3')
 btn31.clicked.connect(close3) 
 layout.addWidget(btn31)
 
-btn32 = QPushButton('device3 name')
+btn32 = QPushButton(name_list[2])
 btn32.clicked.connect(name3) 
 layout.addWidget(btn32)
 
@@ -161,7 +184,7 @@ btn41 = QPushButton('close4')
 btn41.clicked.connect(close4) 
 layout.addWidget(btn41)
 
-btn42 = QPushButton('device4 name')
+btn42 = QPushButton(name_list[3])
 btn42.clicked.connect(name4) 
 layout.addWidget(btn42)
 
