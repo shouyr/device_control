@@ -3,6 +3,8 @@ from QLed import QLed
 import serial
 import serial.tools.list_ports
 import sys
+from os.path import exists
+
 def selectionchange():
     led.value = False
 def oepn_serial():
@@ -91,9 +93,19 @@ def name4():
 def quit1():
     sys.exit()
 
-f = open('name_list.txt','r')
-name_list = f.read().splitlines()
-f.close()   
+
+
+
+if exists('name_list.txt'):
+    f = open('name_list.txt','r')
+    name_list = f.read().splitlines()
+    f.close()  
+else:
+    name_list = ['device1_name','device2_name','device3_name','device4_name']
+    f = open('name_list.txt','w')
+    for i in range(4):
+        f.writelines(name_list[i]+'\n')
+    f.close() 
 port_list = list(serial.tools.list_ports.comports())
 tempstr = ["none","none","none","none","none","none","none","none","none","none"]
 if len(port_list) == 0:
