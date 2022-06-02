@@ -13,15 +13,14 @@ def oepn_serial():
     ser = serial.Serial(comstr[0:4], 9600, timeout=1)
     if ser.isOpen() == True:
         led.value = True
-        ser.write(b'\x55\x56\x00\x00\x00\x00\x08\xB3') #close all 
-        led1.value = False
-        led2.value = False
-        led3.value = False
-        led4.value = False
-        led5.value = False
-        led6.value = False
-        led7.value = False
-        led8.value = False
+        close1() #close all 
+        close2()
+        close3()
+        close4()
+        close5() #close all 
+        close6()
+        close7()
+        close8()
     else:
         alert = QMessageBox()
         alert.setText('serial problem')
@@ -29,6 +28,14 @@ def oepn_serial():
         led.value = False
    # return ser
 def close_serial():
+    close1()
+    close2()
+    close3()
+    close4()
+    close5()
+    close6()
+    close7()
+    close8()
     ser.close()
     led.value = ser.isOpen()
     
