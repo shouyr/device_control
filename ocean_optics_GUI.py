@@ -16,10 +16,15 @@ waittime = 50
 expose = 8000
 shotnum = 10
 filters = ["F1","F2","F3","F4","F5","F6"]
+flipper1 = ["b0","b1"]
+flipper2 = ["d0","d1"]
 current_filter = 'F1'
+current_flp1 = 'b0'
+current_flp2 = 'd0'
+notes = ''
 current_count = 500
 specmodel = 'MAYP111212'
-current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:]
+current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + current_flp1 + '_' + current_flp2 + '_' + notes
 
 app = QApplication(sys.argv)
 window = QWidget()
@@ -45,6 +50,18 @@ def shotchange():
 def filterchange():
     global current_filter
     current_filter = cb.currentText()
+def flipper1change():
+    global current_flp1
+    current_flp1 = flp1.currentText()
+def flipper2change():
+    global current_flp2
+    current_flp2 = flp2.currentText()
+def changenote():
+    text, ok = QInputDialog.getText(window, 'name', 'input the name')
+    global notes
+    if ok:
+        btn32.setText(text)
+        notes = text
 def countchange():
     global current_count
     current_count = count.value()
@@ -53,7 +70,7 @@ def wait():
 def acquire():
     global current_file
     global shotnum
-    current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:]
+    current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + current_flp1 + '_' + current_flp2 + '_' + notes
     filedir.setText(current_file)
     spec = Spectrometer.from_serial_number(serial = specmodel)
     num = np.int32(waittime*1e6/expose)
@@ -62,6 +79,8 @@ def acquire():
         wavelengths, intensities = spec.spectrum(correct_dark_counts = True)
         if np.max(intensities[10:-5]) > current_count:
             break
+        else: 
+            status.setText(str(i))
     dataline.setData(wavelengths, intensities)
     np.save(current_file,intensities)
     shotnum = shotnum + 1
@@ -116,21 +135,42 @@ count.setValue(500)
 count.valueChanged.connect(countchange) 
 layout.addWidget(count,3,2)
 
+lab7 = QLabel("Flipper_800nm")
+layout.addWidget(lab7,4,0)
+lab8 = QLabel("Flipper_400nm")
+layout.addWidget(lab8,4,1)
+lab9 = QLabel("Notes")
+layout.addWidget(lab9,4,2)
+
+flp1 = QComboBox()
+flp1.addItems(flipper1)
+flp1.currentIndexChanged.connect(flipper1change)
+layout.addWidget(flp1,5,0)
+
+flp2 = QComboBox()
+flp2.addItems(flipper2)
+flp2.currentIndexChanged.connect(flipper2change)
+layout.addWidget(flp2,5,1)
+
+btn32 = QPushButton('')
+btn32.clicked.connect(changenote) 
+layout.addWidget(btn32)
+
 filedir = QTextBrowser()
 filedir.setFixedHeight(30)
 filedir.setFixedWidth(170)
 filedir.setText(current_file)
-layout.addWidget(filedir,4,0)
+layout.addWidget(filedir,6,0)
 
 status = QTextBrowser()
 status.setFixedHeight(30)
 status.setFixedWidth(170)
 status.setText('ready')
-layout.addWidget(status,4,1)
+layout.addWidget(status,6,1)
 
 start = QPushButton('start')
 start.clicked.connect(acquire) 
-layout.addWidget(start,4,2)
+layout.addWidget(start,6,2)
 
 
 plots = PlotWidget()
@@ -141,7 +181,7 @@ data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 dataline = plots.plot(data)
 plots.showGrid(x=True, y=True)
 plots.setXRange(200, 1100, padding=0)
-layout.addWidget(plots,5,0,1,3)
+layout.addWidget(plots,7,0,1,3)
 
 timer = QTimer()  # set up your QTimer
 timer.timeout.connect(wait)  # connect it to your update function
