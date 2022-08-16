@@ -11,8 +11,8 @@ import numpy as np
 import sys
 from PyQt5.QtCore import QTimer
 from seabreeze.spectrometers import Spectrometer
-
-waittime = 50
+# import time
+waittime = 20
 expose = 8000
 shotnum = 10
 filters = ["F1","F2","F3","F4","F5","F6"]
@@ -74,15 +74,25 @@ def acquire():
     filedir.setText(current_file)
     spec = Spectrometer.from_serial_number(serial = specmodel)
     num = np.int32(waittime*1e6/expose)
+    print(num)
+    # t1 = time.time()
     spec.integration_time_micros(expose)
     for i in np.arange(num):
         wavelengths, intensities = spec.spectrum(correct_dark_counts = True)
         if np.max(intensities[10:-5]) > current_count:
             break
         else: 
-            status.setText(str(i))
+            # time.sleep(0.01)
+            numt = np.int32(waittime-i*expose/1e6)
+            if numt < num: 
+                status.setText(str(numt+1))
+                status.repaint() #立即重绘
+                QApplication.processEvents()
+                num = numt
     dataline.setData(wavelengths, intensities)
     np.save(current_file,intensities)
+    # t2 = time.time()
+    # print(t2-t1)
     shotnum = shotnum + 1
     shotn.setValue(shotnum)
     status.setText('OK')
