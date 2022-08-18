@@ -37,12 +37,16 @@ def choosepic():
     spot_size = np.float64(spot_size)
     laser_energy = input3.get()
     if laser_energy == 'laser_energy_J':
-        laser_energy = '28'
+        laser_energy = '20'
     laser_energy = np.float64(laser_energy)
     laser_t = input4.get()
     if laser_t == 'laser_duration_fs':
-        laser_t = '25'
+        laser_t = '26'
     laser_t = np.float64(laser_t)
+    background = input5.get()
+    if background == 'set_background':
+        background = '0'
+    background = np.float64(background)
     path_ = tkinter.filedialog.askopenfilename()
     path.set(path_)
     img_open = Image.open(entry.get())
@@ -99,11 +103,14 @@ def choosepic():
     a = ellipse[1][0]
     b = ellipse[1][1]    
     
-    # subtract background
-    bg = np.mean(image[50:550,50:550])
-    r = np.arange(rmax)
     sumr = np.zeros(rmax)
     spot0 = image[xc-rmax:xc+rmax,yc-rmax:yc+rmax]
+    # subtract background
+    bg = np.mean(image[50:350,50:350])
+    out4.set('auto_background='+str(np.round(bg,4)))
+    if background != 0: 
+        bg = background
+    r = np.arange(rmax)
     spot0 = spot0 - bg
     sum0 = np.sum(spot0)
     
@@ -158,7 +165,7 @@ def choosepic():
     sum1 = np.sum(spot0[xc-rmax:xc+rmax,yc-rmax:yc+rmax])
     confwhm = (sum0-sum1)/(sum0-sumr[-1]) 
     out2.set('FWHM a='+str(np.round(a*num,2))+' um  b='+str(np.round(b*num,2)) + ' um,'+' concentration='+str(np.round(confwhm*100,2))+'%')
-    intensity = 4*np.log(2)*laser_energy/np.pi/laser_t*1e15/a/b/num/num*1e8*confwhm*0.5
+    intensity = 4*np.log(2)*laser_energy/np.pi/laser_t*1e15/a/b/num/num*1e8*confwhm/0.5
     out3.set('intensity = ' + str(format(intensity, '.2e')) + 'W/cm^2')
 
     global x ,y
@@ -178,9 +185,9 @@ def choosepic():
     
 if __name__ == '__main__':
     app = tk.Tk()  
-    app.geometry('1024x620') 
+    app.geometry('1024x640') 
     app.title("Laser_spot")  
-    can = tk.Canvas(app, bg='white', height=620, width=1024)
+    can = tk.Canvas(app, bg='white', height=640, width=1024)
     f = Figure(figsize=(5,5), dpi=100)
     a = f.add_subplot(111)
     a.plot(x,y)
@@ -218,5 +225,11 @@ if __name__ == '__main__':
     out3 = tk.StringVar()
     entry7 = tk.Entry(app, state='readonly', text=out3,width = 50)
     entry7.grid(row=2,column=1)
+    input5 = tk.StringVar(value = 'set_background')
+    entry8 = tk.Entry(app,text = input5)
+    entry8.grid(row=6,column=1)
+    out4 = tk.StringVar()
+    entry9 = tk.Entry(app, state='readonly', text=out4,width = 50)
+    entry9.grid(row=6,column=0)
     app.mainloop()
     
