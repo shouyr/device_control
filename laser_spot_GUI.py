@@ -26,30 +26,28 @@ rc('font', **font)
 plt.rcParams['xtick.direction'] = 'in'  # 将x周的刻度线方向设置向内
 plt.rcParams['ytick.direction'] = 'in'  # 将y轴的刻度方向设置向内
 plt.rcParams['font.sans-serif']=['arial']
+
 def choosepic():
-    num = input1.get()
-    if num == 'um/pixel':
-        num = '0.1315'
-    num = np.float64(num)
-    spot_size = input2.get()
-    if spot_size == 'plot_size_um':
-        spot_size = '50'
-    spot_size = np.float64(spot_size)
-    laser_energy = input3.get()
-    if laser_energy == 'laser_energy_J':
-        laser_energy = '20'
-    laser_energy = np.float64(laser_energy)
-    laser_t = input4.get()
-    if laser_t == 'laser_duration_fs':
-        laser_t = '26'
-    laser_t = np.float64(laser_t)
-    background = input5.get()
-    if background == 'set_background':
-        background = '0'
-    background = np.float64(background)
+    global path_
     path_ = tkinter.filedialog.askopenfilename()
     path.set(path_)
-    img_open = Image.open(entry.get())
+    refresh()
+
+# you can use other keys and replace it with "<Return>". EX: "f"
+# by default, this function will pass an unknown argument to your function.
+# thus, you have to give your function a parameter; in this case, we will use *args
+def refresh(*args):
+    num = input1.get()
+    num = np.float64(num)
+    spot_size = input2.get()
+    spot_size = np.float64(spot_size)
+    laser_energy = input3.get()
+    laser_energy = np.float64(laser_energy)
+    laser_t = input4.get()
+    laser_t = np.float64(laser_t)
+    background = input5.get()
+    background = np.float64(background)
+    img_open = Image.open(path_)
     image = np.array(img_open)
     # convert to unit8
     tracking = image/np.max(image)*255
@@ -185,51 +183,66 @@ def choosepic():
     
 if __name__ == '__main__':
     app = tk.Tk()  
-    app.geometry('1024x640') 
+    app.geometry('1001x640') 
     app.title("Laser_spot")  
-    can = tk.Canvas(app, bg='white', height=640, width=1024)
+    can = tk.Canvas(app, bg='white', height=640, width=1001)
     f = Figure(figsize=(5,5), dpi=100)
     a = f.add_subplot(111)
     a.plot(x,y)
     #Entry widget which allows displaying simple text.
     path = tk.StringVar()
     entry = tk.Entry(app, state='readonly', text=path,width = 100)
-    entry.grid(columnspan=2)
+    entry.grid(columnspan=4)
     lableShowImage1 = tk.Label(app)
-    lableShowImage1.grid(row=1,column=0)
+    lableShowImage1.grid(row=1,column=0,columnspan=2)
     canvas = FigureCanvasTkAgg(f,master=app)
     canvas.draw()
-    canvas.get_tk_widget().grid(row=1,column=1)
+    canvas.get_tk_widget().grid(row=1,column=2,columnspan=2)
     buttonSelImage = tk.Button(app, text='open tiff', command=choosepic)
-    buttonSelImage.grid(row=2,column=0)
+    buttonSelImage.grid(row=2,column=0,columnspan=2)
     #buttonSelImage.pack(side=tk.BOTTOM)
     #Call the mainloop of Tk.
-    input1 = tk.StringVar(value = 'um/pixel')
+    label1 = tk.Label(app, text="um/pixel")
+    label1.grid(row=3,column=0)
+    input1 = tk.StringVar(value = '0.1315')
     entry1 = tk.Entry(app,text = input1)
-    entry1.grid(row=3,column=0)
+    entry1.bind('<Return>',refresh)
+    entry1.grid(row=4,column=0)
     out1 = tk.StringVar()
     entry2 = tk.Entry(app, state='readonly', text=out1,width = 50)
-    entry2.grid(row=4,column=0)
-    input2 = tk.StringVar(value = 'plot_size_um')
+    entry2.grid(row=5,column=0,columnspan=2)
+    input2 = tk.StringVar(value = '60')
     entry3 = tk.Entry(app,text = input2)
-    entry3.grid(row=3,column=1)
+    entry3.bind('<Return>',refresh)
+    entry3.grid(row=4,column=1)
+    label2 = tk.Label(app, text="plot_size_um")
+    label2.grid(row=3,column=1)
     out2 = tk.StringVar()
     entry4 = tk.Entry(app, state='readonly', text=out2,width = 50)
-    entry4.grid(row=4,column=1)
-    input3 = tk.StringVar(value = 'laser_energy_J')
+    entry4.grid(row=5,column=2,columnspan=2)
+    input3 = tk.StringVar(value = '20')
     entry5 = tk.Entry(app,text = input3)
-    entry5.grid(row=5,column=0)
-    input4 = tk.StringVar(value = 'laser_duration_fs')
+    entry5.bind('<Return>',refresh)
+    entry5.grid(row=4,column=2)
+    label3 = tk.Label(app, text="laser_energy_J")
+    label3.grid(row=3,column=2)
+    input4 = tk.StringVar(value = '26')
     entry6 = tk.Entry(app,text = input4)
-    entry6.grid(row=5,column=1)
+    entry6.bind('<Return>',refresh)
+    entry6.grid(row=4,column=3)
+    label4 = tk.Label(app, text="laser_duration_fs")
+    label4.grid(row=3,column=3)
     out3 = tk.StringVar()
     entry7 = tk.Entry(app, state='readonly', text=out3,width = 50)
-    entry7.grid(row=2,column=1)
-    input5 = tk.StringVar(value = 'set_background')
+    entry7.grid(row=2,column=2,columnspan=2)
+    input5 = tk.StringVar(value = '0')
     entry8 = tk.Entry(app,text = input5)
-    entry8.grid(row=6,column=1)
+    entry8.bind('<Return>',refresh)
+    entry8.grid(row=6,column=3)
+    label4 = tk.Label(app, text="set_background")
+    label4.grid(row=6,column=2)
     out4 = tk.StringVar()
     entry9 = tk.Entry(app, state='readonly', text=out4,width = 50)
-    entry9.grid(row=6,column=0)
+    entry9.grid(row=6,column=0,columnspan=2)
     app.mainloop()
     
