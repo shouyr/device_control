@@ -6,9 +6,11 @@ analysis of a laser focal spot with tk GUI
 @author: Shou
 """
 
+
 import tkinter as tk  
 import tkinter.filedialog
-from PIL import Image,ImageTk
+from PIL import Image,ImageTk,ImageGrab
+import win32gui
 import cv2 
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -32,7 +34,17 @@ def choosepic():
     path_ = tkinter.filedialog.askopenfilename()
     path.set(path_)
     refresh()
-
+    
+def CaptureScreen():
+    HWND = win32gui.GetFocus()
+    rect=win32gui.GetWindowRect(HWND)
+    x0 = rect[0]
+    x1=x0+1001
+    y0 = rect[1]
+    y1=y0+640
+    im=ImageGrab.grab((x0,y0,x1,y1))
+    im.save(path_[0:-4]+'.jpg','jpeg')
+    
 # you can use other keys and replace it with "<Return>". EX: "f"
 # by default, this function will pass an unknown argument to your function.
 # thus, you have to give your function a parameter; in this case, we will use *args
@@ -104,7 +116,7 @@ def refresh(*args):
     sumr = np.zeros(rmax)
     spot0 = image[xc-rmax:xc+rmax,yc-rmax:yc+rmax]
     # subtract background
-    bg = np.mean(image[50:350,50:350])
+    bg = np.mean(image[50:150,50:150])
     out4.set('auto_background='+str(np.round(bg,4)))
     if background != 0: 
         bg = background
@@ -199,7 +211,9 @@ if __name__ == '__main__':
     canvas.draw()
     canvas.get_tk_widget().grid(row=1,column=2,columnspan=2)
     buttonSelImage = tk.Button(app, text='open tiff', command=choosepic)
-    buttonSelImage.grid(row=2,column=0,columnspan=2)
+    buttonSelImage.grid(row=2,column=0)
+    buttonCapture = tk.Button(app, text='save result', command=CaptureScreen)
+    buttonCapture.grid(row=2,column=1)
     #buttonSelImage.pack(side=tk.BOTTOM)
     #Call the mainloop of Tk.
     label1 = tk.Label(app, text="um/pixel")
