@@ -1,0 +1,3 @@
+C:/Users/shouy/OneDrive/文档/GitHub/device_control/spot.tif, 1/e^2 a, b, FWHM a, b, sqrt(ab), concentration, intensity  4.983e+00  6.104e+00  2.953e+00  3.374e+00  3.157e+00  2.901e-01  3.953e+21  
+  C:/Users/shouy/OneDrive/文档/GitHub/device_control/spot_basler.tif, 1/e^2 a, b, FWHM a, b, sqrt(ab), concentration, intensity  5.819e+00  6.346e+00  3.573e+00  3.962e+00  3.762e+00  3.159e-01  3.030e+21  
+  

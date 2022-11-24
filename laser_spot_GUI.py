@@ -44,9 +44,9 @@ def CaptureScreen():
     y1=y0+640
     im=ImageGrab.grab((x0,y0,x1,y1))
     im.save(path_[0:-4]+'.jpg','jpeg')
-    np.savetxt(path_[0:-4]+'.txt',(x,y),header='first line x in unit um, second line concentration',fmt='%.4f')
+    np.savetxt(path_[0:-4]+'.txt',xyout.T,header='first column x in unit um, second column concentration',fmt='%.4f')
     with open("result.txt", "ab") as f:
-        np.savetxt(f, resout.T,fmt='%.3e', header=path_+', 1/e^2 a,'+' b,'+' FWHM a,'+' b,'+' sqrt(ab),'+' concentration,'+' intensity',newline='  ', footer='\n',comments='')
+        np.savetxt(f, resout,fmt='%.3e', header=path_.encode("utf-8").decode("latin1")+', 1/e^2 a,'+' b,'+' FWHM a,'+' b,'+' sqrt(ab),'+' concentration,'+' intensity',newline='  ', footer='\n',comments='')
         
 # you can use other keys and replace it with "<Return>". EX: "f"
 # by default, this function will pass an unknown argument to your function.
@@ -191,9 +191,12 @@ def refresh(*args):
     out3.set('intensity = ' + str(format(intensity, '.2e')) + 'W/cm^2')
     resout[2:7]=[a*num,b*num,np.sqrt(a*b)*num,confwhm,intensity]
     
-    global x ,y
+    global x ,y, xyout
     x = r*num
     y = con
+    xyout = np.zeros((2,np.size(y)))
+    xyout[0,:] = x
+    xyout[1,:] = y
     f.clear()
     ax = f.add_subplot(111)
     ax.plot(x,y)
@@ -238,13 +241,13 @@ if __name__ == '__main__':
     out1 = tk.StringVar()
     entry2 = tk.Entry(app, state='readonly', text=out1,width = 60)
     entry2.grid(row=5,column=0,columnspan=4)
-    labela = tk.Label(app, text="                          Max pixel",anchor='e')
+    labela = tk.Label(app, text="                   Max pixel value (0-255)",anchor='e')
     labela.grid(row=2,column=3)
     inputa = tk.StringVar(value = '200')
     entrya = tk.Entry(app,text = inputa)
     entrya.bind('<Return>',refresh)
     entrya.grid(row=2,column=4)
-    labelb = tk.Label(app, text="                          Min pixel",anchor='e')
+    labelb = tk.Label(app, text="                   Min pixel value (0-255)",anchor='e')
     labelb.grid(row=2,column=1)
     inputb = tk.StringVar(value = '0')
     entryb = tk.Entry(app,text = inputb)
