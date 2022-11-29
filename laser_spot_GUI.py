@@ -44,9 +44,9 @@ def CaptureScreen():
     y1=y0+640
     im=ImageGrab.grab((x0,y0,x1,y1))
     im.save(path_[0:-4]+'.jpg','jpeg')
-    np.savetxt(path_[0:-4]+'.txt',xyout.T,header='first column x in unit um, second column concentration',fmt='%.4f')
+    np.savetxt(path_[0:-4]+'.txt',xyout.T,header='first column x in unit um and second column concentration',fmt='%.4f')
     with open("result.txt", "ab") as f:
-        np.savetxt(f, resout,fmt='%.3e', header=path_.encode("utf-8").decode("latin1")+', 1/e^2 a,'+' b,'+' FWHM a,'+' b,'+' sqrt(ab),'+' concentration,'+' intensity',newline='  ', footer='\n',comments='')
+        np.savetxt(f, resout,fmt='%.3e', header=path_.encode("utf-8").decode("latin1")+': 1/e^2 a/2,'+' b/2,'+' sqrt(ab)/2,'+' concentration; '+' FWHM a,'+' b,'+' sqrt(ab),'+' concentration; '+' intensity;',newline='  ', footer='\n',comments='')
         
 # you can use other keys and replace it with "<Return>". EX: "f"
 # by default, this function will pass an unknown argument to your function.
@@ -77,7 +77,7 @@ def refresh(*args):
     #apply thresholding to grayscale frames. 
     ret, thresh = cv2.threshold(tracking, gmn, gmx, 0)
     global resout
-    resout = np.zeros(7)
+    resout = np.zeros(9)
     # find contours in the threshold image
     contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_TC89_L1)
     
@@ -96,7 +96,7 @@ def refresh(*args):
     b = ellipse[1][1]
     rmax = np.int32(spot_size/num)
     
-    tracking2 = image/np.max(image[xc-5:xc+5,yc-5:yc+5])*255
+    tracking2 = image/np.max(image[xc-rmax:xc+rmax,yc-rmax:yc+rmax])*255
     tracking2 = tracking2.astype(np.uint8)
     # grayscale threshold values.
     gmn = np.max(tracking2)/2.71828/2.71828
@@ -145,8 +145,6 @@ def refresh(*args):
     cv2.ellipse(spot0,ellipse,(0,0,0),-1)
     sum1 = np.sum(spot0[xc-rmax:xc+rmax,yc-rmax:yc+rmax])
     cone2 = (sum0-sum1)/(sum0-sumr[-1]) 
-    # img = ImageTk.PhotoImage(img_open.resize((500,500)))
-    # spot1 = np.resize(spot1,(500,500))
     spot1[spot1>maxpixel] = maxpixel
     spot1[spot1<minpixel] = minpixel
     spot1 = (spot1-minpixel)/(np.max(spot1)-minpixel)*255
@@ -155,10 +153,10 @@ def refresh(*args):
     img = ImageTk.PhotoImage(img)
     lableShowImage1.config(image=img)
     lableShowImage1.image = img
-    out1.set('1/e^2 a='+str(np.round(a*num,2))+' b='+str(np.round(b*num,2)) + ' '+'√ab='+str(np.round(np.sqrt(a*b)*num,2)) + ' um,'+' concentration='+str(np.round(cone2*100,2))+'%')
-    resout[0:2]=[a*num,b*num]
+    out1.set('1/e^2 a/2='+str(np.round(a*num/2,2))+' b/2='+str(np.round(b*num/2,2)) + ' '+'√ab/2='+str(np.round(np.sqrt(a*b)*num/2,2)) + ' um,'+' concentration='+str(np.round(cone2*100,2))+'%')
+    resout[0:4]=[a*num/2,b*num/2, np.sqrt(a*b)*num/2,cone2]
 
-    tracking3 = image/np.max(image[xc-5:xc+5,yc-5:yc+5])*255
+    tracking3 = image/np.max(image[xc-rmax:xc+rmax,yc-rmax:yc+rmax])*255
     tracking3 = tracking3.astype(np.uint8)
     # grayscale threshold values.
     gmn = np.max(tracking3)/2.0
@@ -189,7 +187,7 @@ def refresh(*args):
     out2.set('FWHM a='+str(np.round(a*num,2))+' b='+str(np.round(b*num,2)) + ' '+'√ab='+str(np.round(np.sqrt(a*b)*num,2)) + ' um,'+' concentration='+str(np.round(confwhm*100,2))+'%')
     intensity = 4*np.log(2)*laser_energy/np.pi/laser_t*1e15/a/b/num/num*1e8*confwhm/0.5
     out3.set('intensity = ' + str(format(intensity, '.2e')) + 'W/cm^2')
-    resout[2:7]=[a*num,b*num,np.sqrt(a*b)*num,confwhm,intensity]
+    resout[4:9]=[a*num,b*num,np.sqrt(a*b)*num,confwhm,intensity]
     
     global x ,y, xyout
     x = r*num
