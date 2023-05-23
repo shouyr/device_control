@@ -1,4 +1,5 @@
 C:/Users/shouy/Downloads/新建文件夹/2.tif: 1/e^2 a, b, sqrt(ab), concentration;  FWHM a, b, sqrt(ab), concentration;  intensity  4.482e+00  4.574e+00  4.528e+00  3.123e-01  9.723e-01  1.345e+00  1.144e+00  3.852e-02  3.999e+21  
   C:/Users/shouy/Downloads/新建文件夹/测试.tif: 1/e^2 a, b, sqrt(ab), concentration;  FWHM a, b, sqrt(ab), concentration;  intensity  4.482e+00  4.574e+00  4.528e+00  3.123e-01  9.723e-01  1.345e+00  1.144e+00  3.852e-02  3.999e+21  
   C:/Users/shouy/Downloads/新建文件夹/최일우.tif: 1/e^2 a/2, b/2, sqrt(ab)/2, concentration;  FWHM a, b, sqrt(ab), concentration;  intensity;  2.573e+00  2.824e+00  2.696e+00  5.445e-01  3.131e+00  3.223e+00  3.177e+00  3.244e-01  4.364e+21  
+  G:/4PW ion 2023 01/4PW ION 2023 01_FSM/20230223/Random hole plate/focus image after SN438_13_Gain20.tif: 1/e^2 a/2, b/2, sqrt(ab)/2, concentration;  FWHM a, b, sqrt(ab), concentration;  intensity;  4.115e+00  5.186e+00  4.619e+00  5.201e-01  3.140e+00  4.766e+00  3.869e+00  2.206e-01  3.733e+21  
   

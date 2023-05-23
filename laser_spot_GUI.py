@@ -64,6 +64,7 @@ def refresh(*args):
     background = np.float64(background)
     img_open = Image.open(path_)
     image = np.array(img_open)
+    image = cv2.medianBlur(image,3)
     maxpixel = inputa.get()
     maxpixel = np.float64(maxpixel)
     minpixel = inputb.get()
@@ -186,7 +187,7 @@ def refresh(*args):
     confwhm = (sum0-sum1)/(sum0-sumr[-1]) 
     out2.set('FWHM a='+str(np.round(a*num,2))+' b='+str(np.round(b*num,2)) + ' '+'√ab='+str(np.round(np.sqrt(a*b)*num,2)) + ' um,'+' concentration='+str(np.round(confwhm*100,2))+'%')
     intensity = 4*np.log(2)*laser_energy/np.pi/laser_t*1e15/a/b/num/num*1e8*confwhm/0.5
-    out3.set('intensity = ' + str(format(intensity, '.2e')) + 'W/cm^2')
+    out3.set('intensity = ' + str(format(intensity, '.2e')) + ' W/cm^2')
     resout[4:9]=[a*num,b*num,np.sqrt(a*b)*num,confwhm,intensity]
     
     global x ,y, xyout
@@ -232,7 +233,7 @@ if __name__ == '__main__':
     #Call the mainloop of Tk.
     label1 = tk.Label(app, text="calibration um/pixel")
     label1.grid(row=3,column=0)
-    input1 = tk.StringVar(value = '0.1315')
+    input1 = tk.StringVar(value = '0.1324')
     entry1 = tk.Entry(app,text = input1)
     entry1.bind('<Return>',refresh)
     entry1.grid(row=3,column=1)
@@ -241,7 +242,7 @@ if __name__ == '__main__':
     entry2.grid(row=5,column=0,columnspan=4)
     labela = tk.Label(app, text="                   Max pixel value (0-255)",anchor='e')
     labela.grid(row=2,column=3)
-    inputa = tk.StringVar(value = '200')
+    inputa = tk.StringVar(value = '255')
     entrya = tk.Entry(app,text = inputa)
     entrya.bind('<Return>',refresh)
     entrya.grid(row=2,column=4)
@@ -260,13 +261,13 @@ if __name__ == '__main__':
     out2 = tk.StringVar()
     entry4 = tk.Entry(app, state='readonly', text=out2,width = 60)
     entry4.grid(row=6,column=0,columnspan=4)
-    input3 = tk.StringVar(value = '20')
+    input3 = tk.StringVar(value = '30')
     entry5 = tk.Entry(app,text = input3)
     entry5.bind('<Return>',refresh)
     entry5.grid(row=4,column=4)
     label3 = tk.Label(app, text="laser_energy_J")
     label3.grid(row=3,column=4)
-    input4 = tk.StringVar(value = '26')
+    input4 = tk.StringVar(value = '25')
     entry6 = tk.Entry(app,text = input4)
     entry6.bind('<Return>',refresh)
     entry6.grid(row=4,column=5)
