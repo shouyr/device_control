@@ -13,7 +13,7 @@ from PyQt5.QtCore import QTimer
 from seabreeze.spectrometers import Spectrometer
 # import time
 waittime = 20
-expose = 8000
+expose = 10000
 shotnum = 10
 filters = ["F1","F2","F3","F4","F5","F6"]
 flipper1 = ["b0","b1"]
@@ -22,8 +22,8 @@ current_filter = 'F1'
 current_flp1 = 'b0'
 current_flp2 = 'd0'
 notes = ''
-current_count = 500
-specmodel = 'MAYP111212'
+current_count = 2000
+specmodel = 'MAYP111332'
 current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + current_flp1 + '_' + current_flp2 + '_' + notes
 
 app = QApplication(sys.argv)
@@ -70,7 +70,8 @@ def wait():
 def acquire():
     global current_file
     global shotnum
-    current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + current_flp1 + '_' + current_flp2 + '_' + notes
+    #current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + current_flp1 + '_' + current_flp2 + '_' + notes
+    current_file = 'shot#' + str(shotnum) + current_filter + '_' + specmodel[-3:] + '_' + notes
     filedir.setText(current_file)
     spec = Spectrometer.from_serial_number(serial = specmodel)
     num = np.int32(waittime*1e6/expose)
@@ -90,7 +91,8 @@ def acquire():
                 QApplication.processEvents()
                 num = numt
     dataline.setData(wavelengths, intensities)
-    np.save(current_file,intensities)
+    np.savetxt(current_file+'_x.txt',wavelengths,fmt='%10.5f')
+    np.savetxt(current_file+'.txt',intensities,fmt='%10.5f')
     # t2 = time.time()
     # print(t2-t1)
     shotnum = shotnum + 1
